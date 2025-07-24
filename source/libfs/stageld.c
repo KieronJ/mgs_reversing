@@ -2,6 +2,8 @@
 #include "datacnf.h"
 
 #include <stdio.h>
+#include <libsn.h>
+
 #include "common.h"
 #include "libgv/libgv.h"
 #include "libdg/libdg.h"    // for DG_FrameRate
@@ -467,7 +469,7 @@ void FS_LoadStageComplete( void *info )
     int vblanks;
 
     vblanks = VSync( -1 );
-    printf( "load complete time %d\n", vblanks - gLoaderStartTime_800B528C );
+    printf( "load complete time %d\n", vblanks - FS_StageLoadStart );
     GV_Free( info );
     FS_CdStageProgBinFix();
     DG_FrameRate = 2;

@@ -118,7 +118,7 @@ extern gameWork GameWork;
 extern unsigned char *GV_ResidentMemoryBottom;
 
 extern void *StageCharacterEntries;
-extern int gOverlayBinSize_800B5290;
+extern int FS_OverlaySize;
 
 /*---------------------------------------------------------------------------*/
 
@@ -715,12 +715,12 @@ static int GM_LoadInitBin(void *buf, int id)
     return 1; // the overlay is embedded in the executable in dev variant
 #endif
 
-    if (((u_char *)StageCharacterEntries + gOverlayBinSize_800B5290) > GV_ResidentMemoryBottom)
+    if (((u_char *)StageCharacterEntries + FS_OverlaySize) > GV_ResidentMemoryBottom)
     {
         printf("TOO LARGE STAGE BINARY!!\n");
     }
 
-    memcpy(StageCharacterEntries, buf, gOverlayBinSize_800B5290);
+    memcpy(StageCharacterEntries, buf, FS_OverlaySize);
     return 1;
 }
 

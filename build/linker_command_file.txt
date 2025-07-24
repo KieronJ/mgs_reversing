@@ -53,12 +53,20 @@
     include "{{OBJ_DIR}}\libhzd\hzdd.obj"
     include "{{OBJ_DIR}}\libhzd\route.obj"
 
-    ; libfs.lib
+    ;libfs
+{% if HD_MODE %}
+    include "{{OBJ_DIR}}\libfs\fshd.obj"
+{% else %}
     include "{{OBJ_DIR}}\libfs\fscd.obj"
+{% endif %}
     include "{{OBJ_DIR}}\libfs\cdbios.obj"
     include "{{OBJ_DIR}}\libfs\srchfile.obj"
     include "{{OBJ_DIR}}\libfs\cdstage.obj"
+{% if HD_MODE %}
+    include "{{OBJ_DIR}}\libfs\stagehd.obj"
+{% else %}
     include "{{OBJ_DIR}}\libfs\stageld.obj"
+{% endif %}
     include "{{OBJ_DIR}}\libfs\movie.obj"
     include "{{OBJ_DIR}}\libfs\stream.obj"
 

@@ -52,6 +52,7 @@ def parse_arguments():
         args.defines += ['VR_EXE']
     elif args.variant == 'dev_exe':
         args.defines += ['DEV_EXE']
+        args.defines += ['HD_MODE']
 
     print("psyq_path = " + args.psyq_path)
     return args

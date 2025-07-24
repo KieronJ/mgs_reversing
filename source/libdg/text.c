@@ -1,6 +1,8 @@
 #include "libdg.h"
 #include "common.h"
 
+#include <stdio.h>
+
 /*** bss ***/
 extern DG_TEX TexSets[DG_MAX_TEXTURES];
 
@@ -93,11 +95,12 @@ DG_TEX *DG_GetTexture( int id )
 
     if (!FindTexture(id, &found))
     {
-        if (id != DG_LastMissingTexture)
+        if ( id != DG_LastMissingTexture )
         {
             DG_LastMissingTexture = id;
         }
 
+        printf( "DG_GetTexture: texture %04x not found!\n", id );
         found = &DG_NullTexture;
     }
 

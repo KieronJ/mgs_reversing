@@ -79,28 +79,28 @@ static void Main(void)
     mts_init_vsync();
     mts_set_vsync_task();
 
-    printf("mem:");
+    printf("mem:\n");
     memcard_init();
 
-    printf("pad:");
+    printf("pad:\n");
     mts_init_controller();
 
-    printf("gv:");
+    printf("gv:\n");
     GV_StartDaemon();
 
-    printf("fs:");
+    printf("fs:\n");
     FS_StartDaemon();
 
-    printf("dg:");
+    printf("dg:\n");
     DG_StartDaemon();
 
-    printf("gcl:");
+    printf("gcl:\n");
     GCL_StartDaemon();
 
-    printf("hzd:");
+    printf("hzd:\n");
     HZD_StartDaemon();
 
-    printf("sound:");
+    printf("sound:\n");
     mts_start_task(MTSID_SOUND_MAIN, SdMain, STACK_BOTTOM(SdStack), SD_STACK_SIZE);
 
     while (!sd_task_active())
@@ -108,7 +108,7 @@ static void Main(void)
         mts_wait_vbl(1);
     }
 
-    printf("gm:");
+    printf("gm:\n");
     GM_StartDaemon();
 
     printf("start\n");

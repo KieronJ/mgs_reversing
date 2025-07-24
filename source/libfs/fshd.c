@@ -10,35 +10,38 @@
 // -------------------------------------------------------------
 // FS_LoadFileRequest
 // FS_LoadFileSync
-// FS_ResetCdFilePosition
 // FS_HDInit
 //
 // NOTE: These labels were recovered from a memleak'd linker map fragment.
 //       Symbols were listed by address order, which is reflected above.
 //
 
-#if 0
-#include "file.cnf"
+#include "libfs.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <libsn.h>
+
+#include "file.cnf"     // defines fs_file_info
 
 void FS_LoadFileRequest( int fileno, int offset, int size, void *buffer )
 {
-    // todo: implement
+    printf("FS_LoadFileRequest unimplemented!\n");
 }
 
 int FS_LoadFileSync( void )
 {
-    // todo: implement
+    /* loading is instant in hd mode  */
     return 0;
-}
-
-int FS_ResetCdFilePosition( void *ptr )
-{
-    // todo: implement
-    return -1;
 }
 
 void FS_HDInit( void )
 {
-    // todo: implement
+    PCinit();
+    printf("Metal Gear Solid FileSystem ( HD ) Init.\n");
 }
-#endif
+
+void MakeFullPath(int name, char *buffer)
+{
+    /* do nothing */
+}

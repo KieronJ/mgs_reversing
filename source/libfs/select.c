@@ -10,8 +10,13 @@
 
 void FS_StartDaemon( void )
 {
-    SetMem(2);          // Set effective memory to 2MB (DTL-H2X00 has 8MB)
+#ifdef HD_MODE
+    FS_HDInit();        // Init HD read system
+#else
     FS_CDInit();        // Init CD read system
+#endif
+
+    SetMem(2);          // Set effective memory to 2MB (DTL-H2X00 has 8MB)
     sio_output_stop();
 }
 
@@ -41,6 +46,8 @@ void DsDataCallback( void (*func)() )
     printf( "DsDataCallback %x\n", (u_int)func );
 }
 
+/* Stub the libsn functions when the HD filesystem is disabled */
+#ifndef HD_MODE
 int PCinit(void)
 {
     return -1;
@@ -60,3 +67,4 @@ int PCclose(int fd)
 {
     return 0;
 }
+#endif

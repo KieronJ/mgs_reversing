@@ -576,6 +576,8 @@ void *GV_AllocMemory2(int which, int size, void **pstart)
     // Check if there is space for more allocations
     if (heap->used >= (MAX_ALLOC_UNITS - 1))
     {
+        printf( "GV_AllocMemory2 failed !!!\n" );
+        GV_DumpMemorySystem( which );
         return NULL;
     }
 
@@ -613,6 +615,9 @@ void *GV_AllocMemory2(int which, int size, void **pstart)
         // Return the start address of the allocation
         return start;
     }
+
+    printf( "GV_AllocMemory2 failed !!!\n" );
+    GV_DumpMemorySystem( which );
 
     // Return NULL if the allocation fails
     return NULL;

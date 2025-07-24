@@ -68,6 +68,13 @@ extern FS_FILE_INFO fs_file_info[]; /* in file.cnf */
 #define FS_FILEID_BRF           (6)     // BRF.DAT
 #define FS_MAX_FILEID           (7)
 
+#ifdef HD_MODE
+/* fshd.c */
+void FS_HDInit(void);
+void HD_FS_LoadFileRequest(int fileno, int offset, int size, void *buffer);
+int  HD_FS_LoadFileSync(void);
+#else
+/* fscd.c */
 int  FS_ResetCdFilePosition(void *buffer);
 void FS_CDInit(void);
 void FS_LoadFileRequest(int fileno, int offset, int size, void *buffer);
@@ -81,7 +88,7 @@ int  FS_CdMakePositionTable(char *buffer, FS_FILE_INFO *finfo);
 void FS_CdStageFileInit(void *buffer, int sector);
 int  FS_CdGetStageFileTop(char *filename);
 
-/* stageld.c */
+/* stageld.c/stagehd.c */
 void *FS_LoadStageRequest(const char *dirname);
 int  FS_LoadStageSync(void *info);
 void FS_LoadStageComplete(void *info);

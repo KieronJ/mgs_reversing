@@ -32,7 +32,7 @@ static int memcard_dummy(int state);
 
 static inline void memcard_access_wait(void)
 {
-    printf("[R]");
+    printf("[R]\n");
 
     while ((gHwCard_do_op != memcard_hwcard_do_op) ||
            (gSwCard_do_op != memcard_swcard_do_op))
@@ -68,7 +68,7 @@ static void memcard_hwcard_end_write()
 
 static void memcard_hwcard_timeout()
 {
-    printf("[C.H.T.O]");
+    printf("[C.H.T.O]\n");
     gHwCard_do_op(3);
 }
 
@@ -91,7 +91,7 @@ static void memcard_swcard_end_write()
 
 static void memcard_swcard_timeout()
 {
-    printf("[C.S.T.O]");
+    printf("[C.S.T.O]\n");
     gSwCard_do_op(3);
 }
 
@@ -559,7 +559,7 @@ int memcard_delete(int port, const char *filename)
         sprintf(tmp, "bu%02X:%s", 16 * port, filename);
         if (erase(tmp))
         {
-            printf("Deleted File %s", filename);
+            printf("Deleted File %s\n", filename);
             return 1;
         }
         printf("ERROR : can't delete %s\n", filename);

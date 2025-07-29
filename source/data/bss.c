@@ -144,9 +144,9 @@ gap                                     gap_800B4E7C[0xC]; // 12 bytes
 
 char BSS            cd_bios_stack_800B4E88[1024]; // 0x400 (1024) bytes
 FS_STAGE_INFO *BSS  fs_stage_info; // 0x4 (4) bytes
-int BSS             gLoaderStartTime_800B528C; // 0x4 (4) bytes
-int BSS             gOverlayBinSize_800B5290; // 0x4 (4) bytes
-int BSS             FS_ResidentCacheDirty; // 0x4 (4) bytes
+int BSS             FS_StageLoadStart; // 0x4 (4) bytes
+int BSS             FS_OverlaySize; // 0x4 (4) bytes
+int BSS             FS_ReloadResident; // 0x4 (4) bytes
 int BSS             fs_stream_ref_count; // 0x4 (4) bytes
 int BSS             fs_stream_read; // 0x4 (4) bytes
 int BSS             fs_stream_sector; // 0x4 (4) bytes

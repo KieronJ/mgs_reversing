@@ -41,7 +41,7 @@ void FS_HDInit( void )
     printf("Metal Gear Solid FileSystem ( HD ) Init.\n");
 }
 
-void MakeFullPath(int name, char *buffer)
+void MakeFullPath(char *name, char *buffer)
 {
     /* do nothing */
 }

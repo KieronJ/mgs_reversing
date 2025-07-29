@@ -14,6 +14,17 @@
 #include "linkvar.h"
 #include "strcode.h"
 
+#define FREECAM_DISTANCE 1500
+#define FREECAM_DEADZONE 16
+
+typedef struct _Work
+{
+    GV_ACT  actor;
+    GV_PAD *pad;
+    SVECTOR angle;
+    int     freecam;
+} Work;
+
 STATIC int     SECTION(".sbss") dword_800ABA84;
 STATIC SVECTOR SECTION(".sbss") svec_800ABA88;
 STATIC int     SECTION(".sbss") dword_800ABA90;
@@ -741,7 +752,7 @@ STATIC void ChangeCamera(int new, int old)
     }
 }
 
-STATIC void CheckMessage(GV_ACT *work)
+STATIC void CheckMessage(Work *work)
 {
     GV_MSG *msg;
     int     n_msg;
@@ -797,7 +808,7 @@ STATIC void CheckMessage(GV_ACT *work)
     }
 }
 
-STATIC int CheckEvents(GV_ACT *work)
+STATIC int CheckEvents(Work *work)
 {
     int event;
     int changed;
@@ -917,13 +928,14 @@ void GM_PanCamera(SVECTOR *pan)
     GV_AddVec3(&svec_800ABA88, pan, &svec_800ABA88);
 }
 
-static void Act(GV_ACT *work)
+static void Act(Work *work)
 {
+    SVECTOR dir, trg, pos;
+    int yaw, pitch, freecam;
     int changed;
-
     int iVar2;
 
-    if (GM_GameStatus >= 0)
+    if (!(GM_GameStatus & STATE_DEMO))
     {
         if (GV_PauseLevel == 0)
         {
@@ -956,22 +968,90 @@ static void Act(GV_ACT *work)
             camera_act_helper4_8002F78C();
         }
 
-        DG_LookAt(DG_Chanl(0),
-            &gUnkCameraStruct2_800B7868.position,
-            &gUnkCameraStruct2_800B7868.target,
-            gUnkCameraStruct2_800B7868.zoom);
+        if (work->pad->release & PAD_R3)
+        {
+            work->freecam ^= TRUE;
+            printf("freecam %s\n", work->freecam ? "ON" : "OFF");
+        }
+
+        freecam = work->freecam;
+
+        if (GM_PlayerStatus & (PLAYER_WATCH | PLAYER_INTRUDE))
+        {
+            freecam = FALSE;
+        }
+
+        if (freecam)
+        {
+            yaw = work->pad->right_dx - 128;
+            yaw = (abs(yaw) > FREECAM_DEADZONE) ? yaw : 0;
+            yaw += work->angle.vy;
+
+            if (yaw < 0)
+            {
+                yaw += 4096;
+            }
+            else if (yaw >= 4096)
+            {
+                yaw -= 4096;
+            }
+
+            work->angle.vy = yaw;
+
+            pitch = work->pad->right_dy - 128;
+            pitch = (abs(pitch) > FREECAM_DEADZONE) ? pitch : 0;
+            pitch += work->angle.vx;
+
+            if (pitch < 16)
+            {
+                pitch = 16;
+            }
+            else if (pitch > 2032)
+            {
+                pitch = 2032;
+            }
+
+            work->angle.vx = pitch;
+
+            GV_DirVec3(&work->angle, FREECAM_DISTANCE, &dir);
+
+            // if ((GV_Time % 30) == 0)
+            // {
+            //     printf("freecam ang: yaw=%04d pitch=%04d\n", yaw, pitch);
+            //     printf("freecam dir: vx=%04d vy=%04d vz=%04d\n", dir.vx, dir.vy, dir.vz);
+            // }
+
+            trg = GM_PlayerPosition;
+            trg.vy += GM_PlayerControl->height / 4;
+
+            GV_SubVec3(&trg, &dir, &pos);
+            GV_OriginPadSystem((3072 - yaw) & 4095);
+        }
+        else
+        {
+            trg = gUnkCameraStruct2_800B7868.target;
+            pos = gUnkCameraStruct2_800B7868.position;
+        }
+
+        DG_LookAt(DG_Chanl(0), &pos, &trg, gUnkCameraStruct2_800B7868.zoom);
     }
 }
 
 void *NewCameraSystem(void)
 {
-    GV_ACT *work;
+    Work *work;
 
-    work = GV_NewActor(GV_ACTOR_ASSIST, sizeof(GV_ACT));
+    work = GV_NewActor(GV_ACTOR_ASSIST, sizeof(Work));
     if (work)
     {
-        GV_SetNamedActor(work, Act, NULL, "camera.c");
+        GV_SetNamedActor(&work->actor, Act, NULL, "camera.c");
     }
+
+    work->pad = &GV_PadData[0];
+    work->freecam = FALSE;
+    work->angle.vx = 0;
+    work->angle.vy = 1024;
+    work->angle.vz = 0;
 
     GM_Camera.zoom = 320;
     GM_Camera.first_person = 0;

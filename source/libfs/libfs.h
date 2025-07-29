@@ -71,8 +71,9 @@ extern FS_FILE_INFO fs_file_info[]; /* in file.cnf */
 #ifdef HD_MODE
 /* fshd.c */
 void FS_HDInit(void);
-void HD_FS_LoadFileRequest(int fileno, int offset, int size, void *buffer);
-int  HD_FS_LoadFileSync(void);
+void FS_LoadFileRequest(int fileno, int offset, int size, void *buffer);
+int  FS_LoadFileSync(void);
+void MakeFullPath(char *name, char *buffer);
 #else
 /* fscd.c */
 int  FS_ResetCdFilePosition(void *buffer);
@@ -80,6 +81,7 @@ void FS_CDInit(void);
 void FS_LoadFileRequest(int fileno, int offset, int size, void *buffer);
 int  FS_LoadFileSync(void);
 void MakeFullPath(char *name, char *buffer);
+#endif
 
 /* srchfile.c */
 int  FS_CdMakePositionTable(char *buffer, FS_FILE_INFO *finfo);

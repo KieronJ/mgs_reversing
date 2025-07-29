@@ -109,7 +109,7 @@ extern int          str_off_idx;
 extern char         exe_name[32];
 extern char        *MGS_DiskName[3]; /* in main.c */
 extern int          FS_DiskNum;
-extern int          FS_ResidentCacheDirty;
+extern int          FS_ReloadResident;
 
 extern DG_TEX gMenuTextureRec_800B58B0;
 
@@ -399,7 +399,7 @@ static void Act(gameWork *work)
             DG_UnDrawFrameCount = 0;
         }
 
-        if (FS_ResidentCacheDirty)
+        if (FS_ReloadResident)
         {
             GV_SaveResidentFileCache();
             DG_SaveResidentTextureCache();

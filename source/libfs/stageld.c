@@ -10,9 +10,9 @@
 #include "sound/sd_cli.h"
 
 extern FS_STAGE_INFO   *fs_stage_info;
-extern int              gLoaderStartTime_800B528C;
-extern int              gOverlayBinSize_800B5290;
-extern int              FS_ResidentCacheDirty;
+extern int              FS_StageLoadStart;
+extern int              FS_OverlaySize;
+extern int              FS_ReloadResident;
 extern void            *StageCharacterEntries;
 
 /*---------------------------------------------------------------------------*/
@@ -101,7 +101,7 @@ static int SetupNextFile( DATACNF_TAG *tag, CDBIOS_TASK *task )
         return 1;
 
     case 'r': // .resident
-        FS_ResidentCacheDirty = 1;
+        FS_ReloadResident = 1;
 
     case 'n': // .nocache
         if ( tag->size <= 0x13FFF )
@@ -424,8 +424,8 @@ void *FS_LoadStageRequest( const char *dirname )
 
     DG_FrameRate = 1;
     printf( "load %s\n", dirname );
-    gLoaderStartTime_800B528C = VSync( -1 );
-    FS_ResidentCacheDirty = 0;
+    FS_StageLoadStart = VSync( -1 );
+    FS_ReloadResident = 0;
     sector = FS_CdGetStageFileTop( (char *)dirname );
     if ( sector < 0 )
     {

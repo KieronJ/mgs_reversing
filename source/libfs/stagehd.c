@@ -8,7 +8,7 @@
 #include "common.h"
 #include "libgv/libgv.h"
 #include "libdg/libdg.h"    // for DG_FrameRate
-#include "sd/sd_cli.h"
+#include "sound/sd_cli.h"
 
 #define P2ALIGN( x, a ) ( ( ( x ) + ( ( a ) - 1 ) ) & ~( ( a ) - 1) )
 
@@ -128,7 +128,7 @@ STATIC int FS_LoadStageCacheFile( char *filename, void *buffer, int hash, int ty
     }
 
     id = GV_CacheID( hash, type );
-    GV_LoadInit( buffer, id, GV_REGION_CACHE );
+    GV_LoadInit( buffer, id, GV_INIT_CACHE );
 
     return size;
 }
@@ -203,11 +203,11 @@ STATIC void FS_LoadStageArchiveFile( char *filename, void *buffer, int type )
         {
             resident = GV_AllocResidentMemory( tag->size );
             GV_CopyMemory( tag + 1, resident, tag->size );
-            GV_LoadInit( resident, id, GV_REGION_RESIDENT );
+            GV_LoadInit( resident, id, GV_INIT_RESIDENT );
         }
         else
         {
-            GV_LoadInit( tag + 1, id, GV_REGION_NOCACHE );
+            GV_LoadInit( tag + 1, id, GV_INIT_NOCACHE );
         }
 
         // flush any voided memory to avoid running out of space

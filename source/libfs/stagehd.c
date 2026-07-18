@@ -34,7 +34,7 @@ STATIC int FS_LoadStageFile( char *filename, void *buffer, int *sizep )
     int fd;
     int size;
 
-    printf( "loading pcdrv:\\%s...\n", filename );
+    printf( "loading pcdrv:/%s...\n", filename );
 
     fd = PCopen( filename, 0, 0 );
     if ( fd < 0 )
@@ -65,7 +65,7 @@ STATIC int FS_LoadStageFileChunked( char *filename, void *buffer, int offset, in
     int fd;
     int size;
 
-    printf( "loading pcdrv:\\%s...\n", filename );
+    printf( "loading pcdrv:/%s...\n", filename );
 
     fd = PCopen( filename, 0, 0 );
     if ( fd < 0 )
@@ -258,7 +258,7 @@ STATIC int FS_ParseConfigLine( const char *dirname, const char *line, void *buff
         printf( "Unable to determine file type!\n" );
     }
 
-    sprintf( filename, "stage\\%s\\%s", dirname, line );
+    sprintf( filename, "stage/%s/%s", dirname, line );
 
     switch ( FS_ConfigSection )
     {
@@ -297,7 +297,7 @@ void *FS_LoadStageRequest( const char *dirname )
 
     base = buffer = GV_GetMaxFreeMemory( GV_NORMAL_MEMORY );
 
-    sprintf( config, "stage\\%s\\data.cnf", dirname );
+    sprintf( config, "stage/%s/data.cnf", dirname );
     if ( FS_LoadStageFile( config, buffer, &size ) )
     {
         printf( "Unable to load data.cnf!\n" );

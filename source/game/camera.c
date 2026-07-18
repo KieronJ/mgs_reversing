@@ -1023,6 +1023,12 @@ static void Act(Work *work)
 
             GV_SubVec3(&trg, &dir, &pos);
             GV_OriginPadSystem((yaw + 2048) & 4095);
+
+            /* Zoom camera if there's a wall in the way */
+            if (HZD_OnlineHazardCheck(GM_PlayerControl->map->hzd, &pos, &trg, HZD_CHK_ALL, HZD_SEG_NO_PLAYER))
+            {
+                HZD_GetOnlinePoint(&pos);
+            }
         }
         else
         {

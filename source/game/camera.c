@@ -983,34 +983,31 @@ static void Act(Work *work)
 
         if (freecam)
         {
-            yaw = work->pad->right_dx - 128;
+            yaw = 128 - work->pad->right_dx;
             yaw = (abs(yaw) > FREECAM_DEADZONE) ? yaw : 0;
-            yaw += work->angle.vy;
-
-            if (yaw < 0)
-            {
-                yaw += 4096;
-            }
-            else if (yaw >= 4096)
-            {
-                yaw -= 4096;
-            }
-
-            work->angle.vy = yaw;
+            yaw = (yaw + work->angle.vy) & 4095;
 
             pitch = work->pad->right_dy - 128;
             pitch = (abs(pitch) > FREECAM_DEADZONE) ? pitch : 0;
-            pitch += work->angle.vx;
+            pitch = (pitch + work->angle.vx) & 4095;
 
-            if (pitch < 16)
+            /* Clamp pitch to avoid vertical direction */
+            if (pitch < 2048)
             {
-                pitch = 16;
+                if (pitch > (1024 - 16))
+                {
+                    pitch = 1024 - 16;
+                }
             }
-            else if (pitch > 2032)
+            else
             {
-                pitch = 2032;
+                if (pitch < (3072 + 16))
+                {
+                    pitch = 3072 + 16;
+                }
             }
 
+            work->angle.vy = yaw;
             work->angle.vx = pitch;
 
             GV_DirVec3(&work->angle, FREECAM_DISTANCE, &dir);
@@ -1025,7 +1022,7 @@ static void Act(Work *work)
             trg.vy += GM_PlayerControl->height / 4;
 
             GV_SubVec3(&trg, &dir, &pos);
-            GV_OriginPadSystem((3072 - yaw) & 4095);
+            GV_OriginPadSystem((yaw + 2048) & 4095);
         }
         else
         {

@@ -710,12 +710,6 @@ static SAVEFILE s07b_dword_800C3788[] = {
 extern u_short GM_WeaponTypes[];
 extern u_short GM_ItemTypes[];
 
-extern void s03b_boxall_800C9328( void );
-extern void s03b_boxall_800C93AC( int );
-extern void s03b_boxall_800C9404( void );
-extern int  s03b_boxall_800C95EC( void );
-extern int  s03b_boxall_800C9654( int );
-
 static void s07b_800D8564( Work *work, int time );
 static void s07b_800D88E4( Work *work, int time );
 static void s07b_800D8B8C( Work *work, int time );
@@ -737,7 +731,7 @@ static int CheckCutsceneSkip( Work *work )
     pad = &GV_PadData[ 2 ];
     if ( ( pad[ 0 ].press | pad[ 1 ].press ) & PAD_CROSS )
     {
-        s03b_boxall_800C9328();
+        GM_VoxInit();
         CloseCinemaScreen();
         GCL_ExecProc( work->field_8B4[ 0 ], NULL );
         return 1;
@@ -802,7 +796,7 @@ static void s07b_800D7F6C( Work *work )
 
         if ( time == 0 && work->field_810 >= 0 )
         {
-            s03b_boxall_800C93AC( work->field_810 );
+            GM_VoxQueue( work->field_810 );
         }
 
         if ( time == list->time )
@@ -842,7 +836,7 @@ static void s07b_800D80B8( Work *work, int time )
     switch ( work->field_802 )
     {
     case 0:
-        if ( !s03b_boxall_800C95EC() ) break;
+        if ( !GM_VoxEnd() ) break;
         printf( "enemy watch %d\n", GM_EnemyWatchCount );
         index = 8;
 
@@ -858,7 +852,7 @@ static void s07b_800D80B8( Work *work, int time )
         work->field_802++;
         break;
     case 1:
-        if ( !s03b_boxall_800C95EC() ) break;
+        if ( !GM_VoxEnd() ) break;
         printf( "continue count %d\n", GM_ContinueCount );
 
         if ( GM_ContinueCount > 8 )
@@ -876,7 +870,7 @@ static void s07b_800D80B8( Work *work, int time )
         work->field_802++;
         break;
     case 2:
-        if ( !s03b_boxall_800C95EC() ) break;
+        if ( !GM_VoxEnd() ) break;
 
         printf( "trap out count %d\n", GM_PitfallDeathCount );
 
@@ -921,7 +915,7 @@ static void s07b_800D80B8( Work *work, int time )
         work->field_802++;
         break;
     case 3:
-        if ( !s03b_boxall_800C95EC() ) break;
+        if ( !GM_VoxEnd() ) break;
         SetMode( work, s07b_800D8564 );
         break;
     }
@@ -1037,7 +1031,7 @@ static void s07b_800D8564( Work *work, int time )
 
     if ( work->field_806 == 0 )
     {
-        if ( s03b_boxall_800C9654( work->field_814[ 15 ] ) )
+        if ( GM_VoxCodeEnd( work->field_814[ 15 ] ) )
         {
             work->field_804 = 0;
             if ( work->field_800 != 0 )
@@ -1065,7 +1059,7 @@ static void s07b_800D8564( Work *work, int time )
             work->field_804 = 1;
             work->flag |= 0x2;
         }
-        else if ( s03b_boxall_800C95EC() )
+        else if ( GM_VoxEnd() )
         {
             work->field_800 = 1;
             work->field_804--;
@@ -1127,7 +1121,7 @@ static void s07b_800D8564( Work *work, int time )
             work->field_804 = 1;
         }
     }
-    else if ( s03b_boxall_800C95EC() )
+    else if ( GM_VoxEnd() )
     {
         work->field_804--;
     }
@@ -1138,7 +1132,7 @@ static void s07b_800D8564( Work *work, int time )
         s07b_800D7ED8( work, 27 );
         work->field_804 = 1;
     }
-    else if ( work->field_802 == 18 && ( work->field_804 == 0 || s03b_boxall_800C95EC() ) )
+    else if ( work->field_802 == 18 && ( work->field_804 == 0 || GM_VoxEnd() ) )
     {
         SetMode( work, s07b_800D88E4 );
     }
@@ -1167,14 +1161,14 @@ static void s07b_800D88E4( Work *work, int time )
     switch ( work->field_800 )
     {
     case 0:
-        if ( s03b_boxall_800C95EC() )
+        if ( GM_VoxEnd() )
         {
             s07b_800D7ED8( work, 33 );
             work->field_800++;
         }
         break;
     case 1:
-        if ( s03b_boxall_800C9654( work->field_814[ 33 ] ) )
+        if ( GM_VoxCodeEnd( work->field_814[ 33 ] ) )
         {
             work->field_800++;
         }
@@ -1185,12 +1179,12 @@ static void s07b_800D88E4( Work *work, int time )
             s07b_800D7ED8( work, 36 );
         }
 
-        if ( s03b_boxall_800C9654( work->field_814[ 36 ] ) )
+        if ( GM_VoxCodeEnd( work->field_814[ 36 ] ) )
         {
             s07b_800D7ED8( work, 37 );
         }
 
-        if ( s03b_boxall_800C9654( work->field_814[ 37 ] ) )
+        if ( GM_VoxCodeEnd( work->field_814[ 37 ] ) )
         {
             s07b_800D7ED8( work, 38 );
         }
@@ -1236,7 +1230,7 @@ static void s07b_800D88E4( Work *work, int time )
         }
         break;
     case 3:
-        if ( s03b_boxall_800C9654( work->field_814[ 34 ] ) )
+        if ( GM_VoxCodeEnd( work->field_814[ 34 ] ) )
         {
             SetMode( work, s07b_800D8B8C );
         }
@@ -1266,7 +1260,7 @@ static void s07b_800D8B8C( Work *work, int time )
         GCL_ExecProc( work->field_8B4[ 6 ], NULL );
     }
 
-    if ( s03b_boxall_800C95EC() )
+    if ( GM_VoxEnd() )
     {
         CloseCinemaScreen();
         if ( work->blur ) GV_DestroyOtherActor( work->blur );
@@ -1301,7 +1295,7 @@ static void s07b_800D8D20( Work *work )
     int ( *action )( Work *, int );
     int time;
 
-    s03b_boxall_800C9404();
+    GM_VoxTick();
     CheckCinemaTimeout();
 
     sna_act_helper2_helper2_80033054( work->control.name, &work->adjust[ 6 ] );
